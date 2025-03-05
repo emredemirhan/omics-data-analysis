@@ -1,4 +1,5 @@
 const Gene = require('../models/Gene');
+const { formatTranscript } = require('../utils/formatUtils');
 
 /**
  * Get all genes with pagination
@@ -14,10 +15,16 @@ exports.getAllGenes = async (page = 1, limit = 50) => {
     .limit(limit)
     .sort({ geneId: 1 });
   
+  // Format transcript strings
+  const formattedGenes = genes.map(gene => ({
+    ...gene.toObject(),
+    transcript: formatTranscript(gene.transcript)
+  }));
+  
   const total = await Gene.countDocuments();
   
   return {
-    genes,
+    genes: formattedGenes,
     totalPages: Math.ceil(total / limit),
     currentPage: page,
     totalGenes: total
@@ -30,7 +37,14 @@ exports.getAllGenes = async (page = 1, limit = 50) => {
  * @returns {Promise<Array>} - Array of genes
  */
 exports.getGenesByIds = async (geneIds) => {
-  return await Gene.find({ geneId: { $in: geneIds } });
+  const genes = await Gene.find({ geneId: { $in: geneIds } });
+  
+  // Format transcript strings
+  return genes.map(gene => {
+    const geneObj = gene.toObject();
+    geneObj.transcript = formatTranscript(geneObj.transcript);
+    return geneObj;
+  });
 };
 
 /**
@@ -42,7 +56,7 @@ exports.getGenesByIds = async (geneIds) => {
 exports.searchGenes = async (searchTerm, limit = 20) => {
   const regex = new RegExp(searchTerm, 'i');
   
-  return await Gene.find({
+  const genes = await Gene.find({
     $or: [
       { geneId: regex },
       { transcript: regex }
@@ -50,4 +64,10 @@ exports.searchGenes = async (searchTerm, limit = 20) => {
   }, 'geneId transcript')
     .limit(limit)
     .sort({ geneId: 1 });
+    
+  // Format transcript strings
+  return genes.map(gene => ({
+    ...gene.toObject(),
+    transcript: formatTranscript(gene.transcript)
+  }));
 }; 
