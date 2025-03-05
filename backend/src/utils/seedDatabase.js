@@ -2,25 +2,26 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
-const mongoose = require('mongoose');
 const Gene = require('../models/Gene');
-
-// Connect to MongoDB
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/omics');
-    console.log('MongoDB connected successfully');
-    return true;
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    return false;
-  }
-};
+const { connectDB, insertBatch } = require('./dbUtils');
 
 // Parse TSV file and seed database
 const seedDatabase = async () => {
+  // First check if database is already seeded
+  try {
+    const existingCount = await Gene.countDocuments();
+    if (existingCount > 0) {
+      console.log(`Database already contains ${existingCount} genes. Skipping seeding.`);
+      process.exit(0);
+      return;
+    }
+  } catch (error) {
+    console.error('Error checking existing data:', error);
+    process.exit(1);
+  }
+
   // Path to the TSV file
-  const tsvFilePath = path.resolve(__dirname, '../../../simple_demo.tsv');
+  const tsvFilePath = path.resolve('/app/simple_demo.tsv');
   
   if (!fs.existsSync(tsvFilePath)) {
     console.error(`TSV file not found at ${tsvFilePath}`);
@@ -68,7 +69,7 @@ const seedDatabase = async () => {
 
       // Insert batch when it reaches the batch size
       if (batch.length >= batchSize) {
-        insertBatch([...batch]);
+        insertBatch(Gene, [...batch]);
         batch = [];
         console.log(`Processed ${count} genes`);
       }
@@ -76,7 +77,7 @@ const seedDatabase = async () => {
     .on('end', async () => {
       // Insert any remaining genes
       if (batch.length > 0) {
-        await insertBatch(batch);
+        await insertBatch(Gene, batch);
         console.log(`Processed ${count} genes`);
       }
       
@@ -84,23 +85,12 @@ const seedDatabase = async () => {
       console.log(`Total genes imported: ${count}`);
       
       // Close the database connection
-      mongoose.connection.close();
       process.exit(0);
     })
     .on('error', (error) => {
       console.error('Error parsing TSV file:', error);
-      mongoose.connection.close();
       process.exit(1);
     });
-};
-
-// Helper function to insert a batch of genes
-const insertBatch = async (genes) => {
-  try {
-    await Gene.insertMany(genes, { ordered: false });
-  } catch (error) {
-    console.error('Error inserting batch:', error);
-  }
 };
 
 // Run the seeding process
