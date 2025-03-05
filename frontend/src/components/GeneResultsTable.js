@@ -7,8 +7,8 @@ const GeneResultsTable = ({ queryResults, handleRemoveGene, selectedGenes, handl
     
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h3>Expression Data Results</h3>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
+        <h3 className="mb-2 mb-md-0">Expression Data Results</h3>
         <div className="d-flex align-items-center gap-3">
           <Badge bg="primary" className="py-2 px-3">
             {selectedGenes.length} {selectedGenes.length === 1 ? 'Gene' : 'Genes'} Selected
@@ -29,46 +29,39 @@ const GeneResultsTable = ({ queryResults, handleRemoveGene, selectedGenes, handl
           <thead>
             <tr>
               <th>Gene ID</th>
-              <th style={{ minWidth: '200px' }}>Transcript</th>
-              <th>Exper Rep1</th>
-              <th>Exper Rep2</th>
-              <th>Exper Rep3</th>
-              <th>Control Rep1</th>
-              <th>Control Rep2</th>
-              <th>Control Rep3</th>
-              <th>Actions</th>
+              <th className="d-none d-lg-table-cell" style={{ minWidth: '200px' }}>Transcript</th>
+              <th className="d-none d-lg-table-cell">Exper Rep1</th>
+              <th className="d-none d-lg-table-cell">Exper Rep2</th>
+              <th className="d-none d-lg-table-cell">Exper Rep3</th>
+              <th className="d-none d-lg-table-cell">Control Rep1</th>
+              <th className="d-none d-lg-table-cell">Control Rep2</th>
+              <th className="d-none d-lg-table-cell">Control Rep3</th>
+              <th className="d-none d-lg-table-cell">Actions</th>
             </tr>
           </thead>
           <tbody>
             {queryResults.map(gene => (
               <tr key={gene.geneId}>
-                <td>{gene.geneId}</td>
-                <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                  {gene.transcript}
+                <td className="d-lg-none">
+                  <div><strong>ID:</strong> {gene.geneId}</div>
+                  <div><strong>Transcript:</strong> {gene.transcript}</div>
+                  <div className="mt-2">
+                    <Button as={Link} to={`/analysis/${gene.geneId}`} variant="info" size="sm">Analyze</Button>
+                    <Button variant="outline-danger" size="sm" className="ms-2" onClick={() => handleRemoveGene(gene.geneId)}>Remove</Button>
+                  </div>
                 </td>
-                <td>{gene.expressionValues.exper_rep1.toFixed(2)}</td>
-                <td>{gene.expressionValues.exper_rep2.toFixed(2)}</td>
-                <td>{gene.expressionValues.exper_rep3.toFixed(2)}</td>
-                <td>{gene.expressionValues.control_rep1.toFixed(2)}</td>
-                <td>{gene.expressionValues.control_rep2.toFixed(2)}</td>
-                <td>{gene.expressionValues.control_rep3.toFixed(2)}</td>
-                <td>
+                <td className="d-none d-lg-table-cell">{gene.geneId}</td>
+                <td className="d-none d-lg-table-cell" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{gene.transcript}</td>
+                <td className="d-none d-lg-table-cell">{gene.expressionValues.exper_rep1.toFixed(2)}</td>
+                <td className="d-none d-lg-table-cell">{gene.expressionValues.exper_rep2.toFixed(2)}</td>
+                <td className="d-none d-lg-table-cell">{gene.expressionValues.exper_rep3.toFixed(2)}</td>
+                <td className="d-none d-lg-table-cell">{gene.expressionValues.control_rep1.toFixed(2)}</td>
+                <td className="d-none d-lg-table-cell">{gene.expressionValues.control_rep2.toFixed(2)}</td>
+                <td className="d-none d-lg-table-cell">{gene.expressionValues.control_rep3.toFixed(2)}</td>
+                <td className="d-none d-lg-table-cell">
                   <div className="d-flex flex-column gap-2">
-                    <Button 
-                      as={Link} 
-                      to={`/analysis/${gene.geneId}`} 
-                      variant="info" 
-                      size="sm"
-                    >
-                      Analyze
-                    </Button>
-                    <Button 
-                      variant="outline-danger" 
-                      size="sm"
-                      onClick={() => handleRemoveGene(gene.geneId)}
-                    >
-                      Remove
-                    </Button>
+                    <Button as={Link} to={`/analysis/${gene.geneId}`} variant="info" size="sm">Analyze</Button>
+                    <Button variant="outline-danger" size="sm" onClick={() => handleRemoveGene(gene.geneId)}>Remove</Button>
                   </div>
                 </td>
               </tr>

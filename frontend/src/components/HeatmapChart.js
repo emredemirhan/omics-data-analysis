@@ -37,10 +37,12 @@ const HeatmapChart = ({ gene }) => {
     const width = 400 - margin.left - margin.right;
     const height = 200 - margin.top - margin.bottom;
 
-    // Create SVG
+    // Create SVG with responsive viewBox
     const svg = d3.select(svgRef.current)
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('width', '100%')
+      .style('height', 'auto')
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -197,7 +199,9 @@ const HeatmapChart = ({ gene }) => {
           The actual expression values are shown in each cell.
         </div>
         <div className="d-flex justify-content-center">
-          <svg ref={svgRef} />
+          <div style={{ width: '100%', maxWidth: '500px' }}>
+            <svg ref={svgRef} style={{ width: '100%', height: 'auto' }} />
+          </div>
         </div>
       </Card.Body>
     </Card>
