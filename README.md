@@ -90,11 +90,17 @@ This system allows users to:
 ## Getting Started
 
 ### Prerequisites
-- Docker and Docker Compose
-- Node.js (for local development)
-- npm or yarn (for local development)
 
-### Installation & Running with Docker
+For Docker deployment:
+- Docker and Docker Compose
+
+For local development:
+- Node.js and npm/yarn
+- MongoDB Community Edition
+
+### Installation Options
+
+#### Option 1: Using Docker (Recommended)
 
 1. Clone the repository:
 ```bash
@@ -104,6 +110,10 @@ cd omics-data-analysis
 
 2. Run with Docker Compose:
 ```bash
+# For modern Docker installations
+docker compose up
+
+# OR for legacy Docker installations
 docker-compose up
 ```
 
@@ -112,57 +122,77 @@ This will:
 - Start the Node.js backend on http://x.xyz.com
 - Start the React frontend on http://y.xyz.com
 
-### Manual Setup (Development)
+#### Option 2: Manual Setup (Development)
 
-#### Backend Setup
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
+1. **Set up MongoDB**:
+   - For macOS (using Homebrew):
+     ```bash
+     brew tap mongodb/brew
+     brew install mongodb-community
+     brew services start mongodb-community
+     ```
+   - For Windows/Linux, follow the [MongoDB Installation Guide](https://docs.mongodb.com/manual/administration/install-community/)
+   - Verify MongoDB is running:
+     ```bash
+     mongosh
+     ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+2. **Backend Setup**:
+   ```bash
+   cd backend
+   npm install
+   ```
+   
+   Create a `.env` file with:
+   ```
+   PORT=3001
+   MONGODB_URI=mongodb://localhost:27017/omics
+   ```
+   
+   Seed the database and start the server:
+   ```bash
+   npm run seed
+   npm run dev
+   ```
 
-3. Set up environment variables:
-Create a `.env` file with:
-```
-PORT=3001
-MONGODB_URI=mongodb://localhost:27017/omics
-FRONTEND_URL=http://localhost:3000
-```
+3. **Frontend Setup**:
+   ```bash
+   cd frontend
+   npm install
+   ```
+   
+   Create a `.env` file with:
+   ```
+   REACT_APP_API_URL=http://localhost:3001/api
+   ```
+   
+   Start the development server:
+   ```bash
+   npm start
+   ```
 
-4. Seed the database with mock data:
-```bash
-npm run seed
-```
+### Environment Configuration
 
-5. Start the development server:
-```bash
-npm run dev
-```
+The application uses environment variables for configuration:
 
-#### Frontend Setup
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
+1. **Local Development Environment**:
+   - Located in `.env` files in both frontend and backend directories
+   - Used when running the application locally without Docker
 
-2. Install dependencies:
-```bash
-npm install
-```
+2. **Docker Production Environment**:
+   - Defined in the `docker-compose.yml` file
+   - Used when running the application with Docker Compose
 
-3. Set up environment variables:
-Create a `.env` file with:
-```
-REACT_APP_API_URL=http://localhost:3001/api
-```
+#### Production Deployment
 
-4. Start the development server:
-```bash
-npm start
+For production deployment, the application is configured to run:
+- Backend API at `http://x.xyz.com`
+- Frontend at `http://y.xyz.com`
+
+To modify these URLs, update the environment variables in the `docker-compose.yml` file:
+```yaml
+# Frontend environment
+- REACT_APP_API_URL=http://x.xyz.com/api
 ```
 
 ## Project Structure
