@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorAlert from '../components/ErrorAlert';
 import GeneInfoCard from '../components/GeneInfoCard';
 import ExpressionChart from '../components/ExpressionChart';
+import HeatmapChart from '../components/HeatmapChart';
 import StatisticsCard from '../components/StatisticsCard';
 import ExpressionDataTable from '../components/ExpressionDataTable';
 
@@ -83,6 +84,12 @@ const AnalysisPage = () => {
       <Row className="mb-4">
         <Col>
           <ExpressionChart gene={gene} />
+        </Col>
+      </Row>
+      
+      <Row className="mb-4">
+        <Col>
+          <HeatmapChart gene={gene} />
         </Col>
       </Row>
       

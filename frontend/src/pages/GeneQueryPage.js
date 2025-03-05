@@ -121,11 +121,6 @@ const GeneQueryPage = () => {
     }
   };
 
-  // Handle querying expression data for selected genes
-  const handleQueryGenes = () => {
-    queryGenesData(selectedGenes);
-  };
-
   return (
     <Container>
       <h1 className="mb-4">Gene Expression Query</h1>
