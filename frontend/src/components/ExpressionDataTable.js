@@ -1,14 +1,9 @@
 import React from 'react';
 import { Card, Table, Badge } from 'react-bootstrap';
+import { isOutlier } from '../utils/dataUtils';
 
 const ExpressionDataTable = ({ gene, outliers }) => {
   if (!gene) return null;
-  
-  // Check if a value is an outlier
-  const isOutlier = (condition) => {
-    if (!outliers || !outliers.outliers) return false;
-    return outliers.outliers.some(o => o.condition === condition);
-  };
   
   return (
     <Card>
@@ -26,32 +21,32 @@ const ExpressionDataTable = ({ gene, outliers }) => {
           <tbody>
             <tr>
               <th>Experimental</th>
-              <td className={isOutlier('exper_rep1') ? 'outlier' : ''}>
+              <td className={isOutlier('exper_rep1', outliers) ? 'outlier' : ''}>
                 {gene.expressionValues.exper_rep1.toFixed(2)}
-                {isOutlier('exper_rep1') && <Badge bg="danger" className="ms-2">Outlier</Badge>}
+                {isOutlier('exper_rep1', outliers) && <Badge bg="danger" className="ms-2">Outlier</Badge>}
               </td>
-              <td className={isOutlier('exper_rep2') ? 'outlier' : ''}>
+              <td className={isOutlier('exper_rep2', outliers) ? 'outlier' : ''}>
                 {gene.expressionValues.exper_rep2.toFixed(2)}
-                {isOutlier('exper_rep2') && <Badge bg="danger" className="ms-2">Outlier</Badge>}
+                {isOutlier('exper_rep2', outliers) && <Badge bg="danger" className="ms-2">Outlier</Badge>}
               </td>
-              <td className={isOutlier('exper_rep3') ? 'outlier' : ''}>
+              <td className={isOutlier('exper_rep3', outliers) ? 'outlier' : ''}>
                 {gene.expressionValues.exper_rep3.toFixed(2)}
-                {isOutlier('exper_rep3') && <Badge bg="danger" className="ms-2">Outlier</Badge>}
+                {isOutlier('exper_rep3', outliers) && <Badge bg="danger" className="ms-2">Outlier</Badge>}
               </td>
             </tr>
             <tr>
               <th>Control</th>
-              <td className={isOutlier('control_rep1') ? 'outlier' : ''}>
+              <td className={isOutlier('control_rep1', outliers) ? 'outlier' : ''}>
                 {gene.expressionValues.control_rep1.toFixed(2)}
-                {isOutlier('control_rep1') && <Badge bg="danger" className="ms-2">Outlier</Badge>}
+                {isOutlier('control_rep1', outliers) && <Badge bg="danger" className="ms-2">Outlier</Badge>}
               </td>
-              <td className={isOutlier('control_rep2') ? 'outlier' : ''}>
+              <td className={isOutlier('control_rep2', outliers) ? 'outlier' : ''}>
                 {gene.expressionValues.control_rep2.toFixed(2)}
-                {isOutlier('control_rep2') && <Badge bg="danger" className="ms-2">Outlier</Badge>}
+                {isOutlier('control_rep2', outliers) && <Badge bg="danger" className="ms-2">Outlier</Badge>}
               </td>
-              <td className={isOutlier('control_rep3') ? 'outlier' : ''}>
+              <td className={isOutlier('control_rep3', outliers) ? 'outlier' : ''}>
                 {gene.expressionValues.control_rep3.toFixed(2)}
-                {isOutlier('control_rep3') && <Badge bg="danger" className="ms-2">Outlier</Badge>}
+                {isOutlier('control_rep3', outliers) && <Badge bg="danger" className="ms-2">Outlier</Badge>}
               </td>
             </tr>
           </tbody>
