@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const geneRoutes = require('./routes/geneRoutes');
+const analysisRoutes = require('./routes/analysisRoutes');
 
 // Initialize Express app
 const app = express();
@@ -11,6 +13,9 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Routes
+app.use('/api/genes', geneRoutes);
+app.use('/api/analysis', analysisRoutes);
 
 // Root route
 app.get('/', (req, res) => {
