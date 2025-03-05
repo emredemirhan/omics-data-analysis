@@ -21,7 +21,7 @@ const GeneInfoCard = ({ gene, analysis }) => {
             <tr>
               <th>Fold Change</th>
               <td>
-                {analysis.comparison.foldChange !== null 
+                {typeof analysis.comparison.foldChange === 'number'
                   ? analysis.comparison.foldChange.toFixed(2)
                   : 'N/A'}
               </td>
@@ -29,7 +29,7 @@ const GeneInfoCard = ({ gene, analysis }) => {
             <tr>
               <th>Log2 Fold Change</th>
               <td>
-                {analysis.comparison.log2FoldChange !== null 
+                {typeof analysis.comparison.log2FoldChange === 'number'
                   ? analysis.comparison.log2FoldChange.toFixed(2)
                   : 'N/A'}
               </td>
@@ -37,7 +37,7 @@ const GeneInfoCard = ({ gene, analysis }) => {
             <tr>
               <th>P-value</th>
               <td>
-                {analysis.comparison.pValue !== undefined 
+                {typeof analysis.comparison.pValue === 'number'
                   ? analysis.comparison.pValue.toFixed(4)
                   : 'N/A'}
                 {analysis.comparison.significant && (
