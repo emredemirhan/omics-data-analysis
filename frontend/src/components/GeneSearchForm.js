@@ -7,9 +7,6 @@ const componentStyles = {
     position: 'relative',
   },
   resultsContainer: {
-    position: 'absolute',
-    top: 69,
-    zIndex: 1000,
     width: '100%',
     maxHeight: '250px',
     overflowY: 'auto',
@@ -63,7 +60,8 @@ const GeneSearchForm = ({
   setSearchTerm, 
   searchResults, 
   searchLoading, 
-  handleAddGene 
+  handleAddGene,
+  selectedGenes = [] // Add selectedGenes prop with default empty array
 }) => {
   // State to track which row is being hovered
   const [hoveredRow, setHoveredRow] = React.useState(null);
@@ -110,6 +108,11 @@ const GeneSearchForm = ({
     setIsDropdownOpen(false);
   };
 
+  // Add helper function to check if a gene is already selected
+  const isGeneSelected = (geneId) => {
+    return selectedGenes.some(gene => gene.geneId === geneId);
+  };
+
   return (
     <div ref={formRef} style={componentStyles.formContainer}>
       <Form.Group>
@@ -117,7 +120,7 @@ const GeneSearchForm = ({
         <InputGroup>
           <Form.Control
             type="text"
-            placeholder="Enter gene ID or transcript"
+            placeholder="Type to search for genes by ID or transcript"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => {
@@ -133,9 +136,7 @@ const GeneSearchForm = ({
             </Button>
           )}
         </InputGroup>
-        <Form.Text className="text-muted">
-          Type to search for genes by ID or transcript
-        </Form.Text>
+
       </Form.Group>
       
       {searchLoading && <Spinner animation="border" size="sm" />}
@@ -152,34 +153,38 @@ const GeneSearchForm = ({
         <div className="border rounded" style={componentStyles.resultsContainer}>
           <div style={componentStyles.dropdownHeader}>
             <span>{searchResults.length} results found</span>
-            <span 
-              style={componentStyles.closeButton} 
-              onClick={() => setIsDropdownOpen(false)}
-            >
-              ×
-            </span>
           </div>
-          {searchResults.map(gene => (
-            <div 
-              key={gene.geneId} 
-              className="border-bottom"
-              style={{
-                ...componentStyles.resultRow,
-                ...(hoveredRow === gene.geneId ? componentStyles.resultRowHover : {})
-              }}
-              onClick={() => handleAddGene(gene)}
-              onMouseEnter={() => setHoveredRow(gene.geneId)}
-              onMouseLeave={() => setHoveredRow(null)}
-            >
-              <div className="d-flex justify-content-between align-items-center">
-                <div style={{ textAlign: 'left' }}>
-                  <span style={componentStyles.geneId}>{gene.geneId}</span>
-                  <span style={componentStyles.transcripts}>{gene.transcript}</span>
+          {searchResults.map(gene => {
+            const selected = isGeneSelected(gene.geneId);
+            return (
+              <div 
+                key={gene.geneId} 
+                className="border-bottom"
+                style={{
+                  ...componentStyles.resultRow,
+                  ...(hoveredRow === gene.geneId && !selected ? componentStyles.resultRowHover : {}),
+                  cursor: selected ? 'default' : 'pointer',
+                  opacity: selected ? 0.7 : 1,
+                }}
+                onClick={() => !selected && handleAddGene(gene)}
+                onMouseEnter={() => !selected && setHoveredRow(gene.geneId)}
+                onMouseLeave={() => !selected && setHoveredRow(null)}
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <div style={{ textAlign: 'left' }}>
+                    <span style={componentStyles.geneId}>{gene.geneId}</span>
+                    <span style={componentStyles.transcripts}>{gene.transcript}</span>
+                  </div>
+                  <span style={{
+                    ...componentStyles.addButton,
+                    color: selected ? '#6c757d' : '#007bff',
+                  }}>
+                    {selected ? 'Already added' : 'Click to add'}
+                  </span>
                 </div>
-                <span style={componentStyles.addButton}>Click to add</span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

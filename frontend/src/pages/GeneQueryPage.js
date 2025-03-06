@@ -135,6 +135,7 @@ const GeneQueryPage = () => {
             searchResults={searchResults}
             searchLoading={searchLoading}
             handleAddGene={handleAddGene}
+            selectedGenes={selectedGenes}
           />
         </Col>
       </Row>
